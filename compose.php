@@ -139,12 +139,11 @@ $MCAPI = new chimpexpressMCAPI;
                         jQuery('#CEwrap').html(response);
 
                     },
-                    complete: function() {
-                        jQuery('#ajaxLoader').hide();
-
-                        //init quicktags
-                        quicktags({id : theEditorID}); // REQUIRED to show quick tags and fix tabs
-                        tinymce.execCommand('mceAddControl', true, theEditorID); // REQUIRED hack to fix editor created in AJAX
+                    complete: function() { 
+                        jQuery('#ajaxLoader').hide(); 
+                        window.tinymce.dom.Event.domLoaded = true; 
+                        tinymce.init({selector:"#"+theEditorID, relative_urls:false, remove_script_host:false, convert_urls:false}); 
+                        quicktags({id : theEditorID}); 
                     }
                 });
             }
@@ -668,14 +667,16 @@ $MCAPI = new chimpexpressMCAPI;
         $rows = get_option('default_post_edit_rows');
         $rows = (($rows < 3) || ($rows > 100)) ? 15 : $rows;
 
-        wp_editor($content, $id, array(
-            'tab_index' => '2',
-            'teeny' => false,
-            'textarea_rows' => $rows,
-            'media_buttons' => true,
-            'tinymce' => array(
-                'plugins' => 'inlinepopups, fullscreen, wordpress, wplink, wpdialogs'
-            )
+        wp_editor($content, $id, array( 
+            'tab_index' => '2', 
+            'teeny' => false, 
+            'textarea_rows' => $rows, 
+            'media_buttons' => true, 
+            'textarea_name' => $id, 
+            'tinymce' => array( 
+                'selector' => "#".$id, 
+                'plugins' => 'inlinepopups, fullscreen, wordpress, wplink, wpdialogs' 
+            ) 
         ));
     ?>
 </div>
